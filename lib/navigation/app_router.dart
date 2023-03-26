@@ -8,13 +8,13 @@ import '../routes/home/home_view.dart';
 import '../routes/note/note_list_view.dart';
 
 part 'app_router.gr.dart';
-
 @MaterialAutoRouter(
   replaceInRouteName: 'View,Route',
   routes: <AutoRoute>[
     AutoRoute(
+      path: '/',
+      name: 'HomeTabViewRouter',
       page: HomeView,
-      initial: true,
       children: [
         AutoRoute(page: PostListView, initial: true),
         AutoRoute(page: NoteListView),
@@ -22,13 +22,14 @@ part 'app_router.gr.dart';
     ),
     AutoRoute(
       page: PostDetailedView,
-      path: 'post/:id',
+      path: '/post/:id',
     ),
     AutoRoute(
       page: NoteDetailedView,
-      path: 'note/:id',
+      path: '/note/:id',
     ),
   ],
 )
+
 // extend the generated private router
 class AppRouter extends _$AppRouter {}

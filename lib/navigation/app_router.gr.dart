@@ -17,7 +17,7 @@ class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    HomeRoute.name: (routeData) {
+    HomeTabViewRouter.name: (routeData) {
       return MaterialPageX<dynamic>(
         routeData: routeData,
         child: HomeView(),
@@ -52,43 +52,43 @@ class _$AppRouter extends RootStackRouter {
   @override
   List<RouteConfig> get routes => [
         RouteConfig(
-          HomeRoute.name,
+          HomeTabViewRouter.name,
           path: '/',
           children: [
             RouteConfig(
               PostListRoute.name,
               path: '',
-              parent: HomeRoute.name,
+              parent: HomeTabViewRouter.name,
             ),
             RouteConfig(
               NoteListRoute.name,
               path: 'note-list-view',
-              parent: HomeRoute.name,
+              parent: HomeTabViewRouter.name,
             ),
           ],
         ),
         RouteConfig(
           PostDetailedRoute.name,
-          path: 'post/:id',
+          path: '/post/:id',
         ),
         RouteConfig(
           NoteDetailedRoute.name,
-          path: 'note/:id',
+          path: '/note/:id',
         ),
       ];
 }
 
 /// generated route for
 /// [HomeView]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
+class HomeTabViewRouter extends PageRouteInfo<void> {
+  const HomeTabViewRouter({List<PageRouteInfo>? children})
       : super(
-          HomeRoute.name,
+          HomeTabViewRouter.name,
           path: '/',
           initialChildren: children,
         );
 
-  static const String name = 'HomeRoute';
+  static const String name = 'HomeTabViewRouter';
 }
 
 /// generated route for
@@ -97,7 +97,7 @@ class PostDetailedRoute extends PageRouteInfo<void> {
   const PostDetailedRoute()
       : super(
           PostDetailedRoute.name,
-          path: 'post/:id',
+          path: '/post/:id',
         );
 
   static const String name = 'PostDetailedRoute';
@@ -109,7 +109,7 @@ class NoteDetailedRoute extends PageRouteInfo<void> {
   const NoteDetailedRoute()
       : super(
           NoteDetailedRoute.name,
-          path: 'note/:id',
+          path: '/note/:id',
         );
 
   static const String name = 'NoteDetailedRoute';

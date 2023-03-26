@@ -7,7 +7,21 @@ class PostListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('PostListView');
+    // return scaffold with a list view of posts
+    return Scaffold(
+          body: ListView.builder(
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text('Post $index'),
+                onTap: () {
+                  // navigate to PostDetailedView
+                },
+              );
+            },
+          ),
+        );
+
   }
 
 }
