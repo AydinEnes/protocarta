@@ -1,13 +1,20 @@
 
 import '../models/note.dart';
+import 'package:rxdart/rxdart.dart';
 
 class NoteRepository {
   NoteRepository();
 
+  // Note stream
+  late final BehaviorSubject<Set<Note>> allNotes =
+  BehaviorSubject<Set<Note>>.seeded({});
+
+  Stream<Set<Note>> get getNoteStream => allNotes.asBroadcastStream();
+
   // fetch pre-defined notes with Note model objects
   Future<List<Note>> fetchNotes() async {
     await Future.delayed(const Duration(seconds: 1));
-    return [
+    List<Note> dumList = [
       const Note(
         saved: true,
         text: 'Note AAA',
@@ -69,5 +76,40 @@ class NoteRepository {
         id: 10,
       ),
     ];
+
+    Set<Note> noteSet = allNotes.value;
+
+    for (Note note in dumList) {
+      noteSet.removeWhere((element) => element.id == note.id);
+      noteSet.add(note);
+    }
+
+    allNotes.add(noteSet);
+
+    return dumList;
   }
+
+  // make note in the stream saved field true
+  void saveNoteStream(int id, String text, int postId, bool saved) {
+    Set<Note> noteSet = allNotes.value;
+    noteSet.removeWhere((element) => element.id == id);
+    if(saved == false) {
+      noteSet.add(Note(
+        saved: true,
+        text: text,
+        postId: postId,
+        id: id,
+      ));
+    }
+    else {
+      noteSet.add(Note(
+        saved: false,
+        text: text,
+        postId: postId,
+        id: id,
+      ));
+    }
+    allNotes.add(noteSet);
+  }
+
 }

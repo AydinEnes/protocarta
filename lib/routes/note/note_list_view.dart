@@ -18,7 +18,8 @@ class NoteListView extends StatelessWidget {
           noteRepository: RepositoryProvider.of<NoteRepository>(context),
           postRepository: RepositoryProvider.of<PostRepository>(context),
           listObjectType: Note,
-        )..add(FetchListEvent()),
+        )..add(FetchListEvent())
+        ..add(ListSubscriptionRequested()),
         child: BlocBuilder<ListBloc, ListState>(
             builder: (context, state) {
               // add fetch list event

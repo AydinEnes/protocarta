@@ -1,12 +1,5 @@
 part of 'list_bloc.dart';
 
-enum ActionStatus {
-  initial,
-  submitting,
-  success,
-  failure,
-}
-
 class ListState extends Equatable {
   final Type listObjectType;
   final ActionStatus status;

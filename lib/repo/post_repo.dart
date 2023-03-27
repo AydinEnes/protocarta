@@ -1,17 +1,24 @@
 
 
 import 'package:protocarta/models/post.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../models/note.dart';
 
 class PostRepository{
   PostRepository();
+
+  late final BehaviorSubject<Set<Post>> allPosts =
+  BehaviorSubject<Set<Post>>.seeded({});
+
+  Stream<Set<Post>> get getPostStream => allPosts.asBroadcastStream();
+
   // fetch pre-defined posts with Post model objects
   Future<List<Post>> fetchPosts() async {
     await Future.delayed(const Duration(seconds: 1));
-    return [
+    List<Post> dumList = [
       const Post(
-        ownerName: 'Owner 1',
+        ownerName: 'Owner AAA',
         liked: true,
         note: Note(
           saved: true,
@@ -22,7 +29,7 @@ class PostRepository{
         id: 1,
       ),
       const Post(
-        ownerName: 'Owner 2',
+        ownerName: 'Owner BBB',
         liked: false,
         note: Note(
           saved: false,
@@ -121,5 +128,29 @@ class PostRepository{
         id: 10,
       ),
     ];
+
+    Set<Post> postSet = allPosts.value;
+
+    for (Post post in dumList) {
+      postSet.removeWhere((element) => element.id == post.id);
+      postSet.add(post);
+    }
+
+    allPosts.add(postSet);
+
+    return dumList;
+  }
+
+  // like / unlike post
+  void likePost(int postId, bool liked, String ownerName, Note note) {
+    Set<Post> postSet = allPosts.value;
+    postSet.removeWhere((element) => element.id == postId);
+    postSet.add(Post(
+      id: postId,
+      liked: !liked,
+      ownerName: ownerName,
+      note: note,
+    ));
+    allPosts.add(postSet);
   }
 }

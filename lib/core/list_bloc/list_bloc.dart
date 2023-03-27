@@ -8,6 +8,7 @@ import 'package:protocarta/repo/post_repo.dart';
 import '../../models/note.dart';
 import '../../models/post.dart';
 import '../../repo/note_repo.dart';
+import '../ActionStatus.dart';
 part 'list_state.dart';
 part 'list_event.dart';
 
@@ -18,6 +19,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     required this.listObjectType
   }) : super(const ListState()){
     on<FetchListEvent>(_onFetchListEvent);
+    on<ListSubscriptionRequested>(_onListSubscriptionRequested);
   }
 
   final NoteRepository noteRepository;
@@ -42,6 +44,35 @@ class ListBloc extends Bloc<ListEvent, ListState> {
         status: ActionStatus.success,
         itemList: posts,
       ));
+    }
+  }
+
+  FutureOr<void> _onListSubscriptionRequested(ListSubscriptionRequested event, Emitter<ListState> emit) async{
+    // listen to notes and posts streams and emit the state with the new list
+    if (listObjectType == Note) {
+      await emit.forEach<Set<Note>>(
+        noteRepository.getNoteStream,
+        onData: (Set<Note> list){
+          final List<int> ids = List<int>.from(state.itemList.map((e) => e.id));
+          final List finalList = ids
+              .map((e) => list.firstWhere((element) => element.id == e))
+              .toList();
+          return state.copyWith(itemList: finalList);
+        }
+      );
+    }
+
+    if (listObjectType == Post) {
+      await emit.forEach<Set<Post>>(
+        postRepository.getPostStream,
+        onData: (Set<Post> list){
+          final List<int> ids = List<int>.from(state.itemList.map((e) => e.id));
+          final List finalList = ids
+              .map((e) => list.firstWhere((element) => element.id == e))
+              .toList();
+          return state.copyWith(itemList: finalList);
+        }
+      );
     }
   }
 }
