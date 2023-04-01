@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/core/list_bloc/list_bloc.dart';
+import 'package:protocarta/core/util/note_card.dart';
 import 'package:protocarta/models/note.dart';
 import 'package:protocarta/models/post.dart';
 import 'package:protocarta/repo/note_repo.dart';
@@ -23,15 +24,10 @@ class NoteListView extends StatelessWidget {
         child: BlocBuilder<ListBloc, ListState>(
             builder: (context, state) {
               // add fetch list event
-              debugPrint('items: $state');
+              //debugPrint('items: $state');
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('${(state.itemList[index] as Note).text}'),
-                    onTap: () {
-                      // navigate to NoteDetailedView
-                    },
-                  );
+                  return NoteCard(note: state.itemList[index] as Note);
                 },
                 itemCount: state.itemList.length,
               );

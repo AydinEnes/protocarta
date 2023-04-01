@@ -30,9 +30,25 @@ class _$AppRouter extends RootStackRouter {
       );
     },
     NoteDetailedRoute.name: (routeData) {
+      final args = routeData.argsAs<NoteDetailedRouteArgs>();
       return MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const NoteDetailedView(),
+        child: NoteDetailedView(
+          key: args.key,
+          note: args.note,
+        ),
+      );
+    },
+    PostCreateRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const PostCreateView(),
+      );
+    },
+    NoteCreateRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const NoteCreateView(),
       );
     },
     PostListRoute.name: (routeData) {
@@ -75,6 +91,14 @@ class _$AppRouter extends RootStackRouter {
           NoteDetailedRoute.name,
           path: '/note/:id',
         ),
+        RouteConfig(
+          PostCreateRoute.name,
+          path: '/post/create',
+        ),
+        RouteConfig(
+          NoteCreateRoute.name,
+          path: '/note/create',
+        ),
       ];
 }
 
@@ -105,14 +129,60 @@ class PostDetailedRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [NoteDetailedView]
-class NoteDetailedRoute extends PageRouteInfo<void> {
-  const NoteDetailedRoute()
-      : super(
+class NoteDetailedRoute extends PageRouteInfo<NoteDetailedRouteArgs> {
+  NoteDetailedRoute({
+    Key? key,
+    required Note note,
+  }) : super(
           NoteDetailedRoute.name,
           path: '/note/:id',
+          args: NoteDetailedRouteArgs(
+            key: key,
+            note: note,
+          ),
         );
 
   static const String name = 'NoteDetailedRoute';
+}
+
+class NoteDetailedRouteArgs {
+  const NoteDetailedRouteArgs({
+    this.key,
+    required this.note,
+  });
+
+  final Key? key;
+
+  final Note note;
+
+  @override
+  String toString() {
+    return 'NoteDetailedRouteArgs{key: $key, note: $note}';
+  }
+}
+
+/// generated route for
+/// [PostCreateView]
+class PostCreateRoute extends PageRouteInfo<void> {
+  const PostCreateRoute()
+      : super(
+          PostCreateRoute.name,
+          path: '/post/create',
+        );
+
+  static const String name = 'PostCreateRoute';
+}
+
+/// generated route for
+/// [NoteCreateView]
+class NoteCreateRoute extends PageRouteInfo<void> {
+  const NoteCreateRoute()
+      : super(
+          NoteCreateRoute.name,
+          path: '/note/create',
+        );
+
+  static const String name = 'NoteCreateRoute';
 }
 
 /// generated route for

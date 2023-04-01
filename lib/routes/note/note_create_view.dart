@@ -6,11 +6,10 @@ import 'package:protocarta/repo/note_repo.dart';
 import 'package:protocarta/repo/post_repo.dart';
 import 'package:protocarta/routes/note/bloc/note_bloc.dart';
 
-class NoteDetailedView extends StatelessWidget {
+class NoteCreateView extends StatelessWidget {
   // use dummy page that says "NoteDetailedView" for now
-  const NoteDetailedView({super.key, required this.note});
+  const NoteCreateView({super.key});
 
-  final Note note;
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +22,7 @@ class NoteDetailedView extends StatelessWidget {
         NoteBloc(
           noteRepository: RepositoryProvider.of<NoteRepository>(context),
           postRepository: RepositoryProvider.of<PostRepository>(context),
-        )..add(FetchNoteEvent(note))
-          ..add(SubscribeToNoteEvent(note.id)),
+        ),
         child: BlocBuilder<NoteBloc, NoteState>(
           builder: (context, state) {
             Note displayNote = Note(

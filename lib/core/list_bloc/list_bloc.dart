@@ -8,7 +8,7 @@ import 'package:protocarta/repo/post_repo.dart';
 import '../../models/note.dart';
 import '../../models/post.dart';
 import '../../repo/note_repo.dart';
-import '../ActionStatus.dart';
+import '../util/ActionStatus.dart';
 part 'list_state.dart';
 part 'list_event.dart';
 
@@ -31,7 +31,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     // if Note is the listObjectType then fetch notes
     if (listObjectType == Note) {
       final notes = await noteRepository.fetchNotes();
-      debugPrint('notes: $notes');
+      //debugPrint('notes: $notes');
       emit (state.copyWith(
         status: ActionStatus.success,
         itemList: notes,
@@ -66,6 +66,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       await emit.forEach<Set<Post>>(
         postRepository.getPostStream,
         onData: (Set<Post> list){
+          //debugPrint("SLM");
           final List<int> ids = List<int>.from(state.itemList.map((e) => e.id));
           final List finalList = ids
               .map((e) => list.firstWhere((element) => element.id == e))
