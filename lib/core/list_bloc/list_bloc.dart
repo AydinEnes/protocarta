@@ -26,6 +26,11 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
   final Type listObjectType;
 
+  /// We update ids of state in two ways:
+  /// 1. Through fetch list. This will update the list upon fetching the list,
+  /// pagination, and refresh. All lists use this.
+  /// 2. Through list subscription requested. This is called when we want to
+  /// add an element to the list in real time. Only certain lists use this.
   FutureOr<void> _onFetchListEvent(
       FetchListEvent event, Emitter<ListState> emit) async {
     // if Note is the listObjectType then fetch notes
@@ -60,17 +65,14 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     //     return state.copyWith(itemList: finalList);
     //   });
     // }
-    //
-    // if (listObjectType == Post) {
-    //   await emit.forEach<Set<Post>>(postRepository.getPostStream,
-    //       onData: (Set<Post> list) {
-    //     //debugPrint("SLM");
-    //     final List<int> ids = List<int>.from(state.itemList.map((e) => e.id));
-    //     final List finalList = ids
-    //         .map((e) => list.firstWhere((element) => element.id == e))
-    //         .toList();
-    //     return state.copyWith(itemList: finalList);
-    //   });
-    // }
+
+    if (listObjectType == Post) {
+      await emit.forEach<ListUpdateObject>(postRepository.getListUpdateStream,
+          onData: (ListUpdateObject listUpdateObject) {
+        List<int> ids = List<int>.from(state.ids);
+
+        return state.copyWith(ids: [listUpdateObject.id, ...ids]);
+      });
+    }
   }
 }

@@ -5,7 +5,10 @@ import 'package:protocarta/models/post.dart';
 import 'package:protocarta/routes/post/bloc/post_bloc.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({super.key, required this.id});
+  const PostCard({
+    super.key,
+    required this.id,
+  });
 
   final int id;
 

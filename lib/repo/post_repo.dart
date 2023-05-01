@@ -2,13 +2,26 @@ import 'package:protocarta/models/post.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:protocarta/models/note.dart';
 
+class ListUpdateObject {
+  ListUpdateObject({
+    required this.id,
+    required this.type,
+  });
+
+  final int id;
+  final Type type;
+}
+
 class PostRepository {
   PostRepository();
 
-  late final BehaviorSubject<Map<int, Post>> allPosts =
+  late final BehaviorSubject<Map<int, Post>> allPostsStream =
       BehaviorSubject<Map<int, Post>>.seeded({});
+  late final BehaviorSubject<ListUpdateObject> listUpdateStream =
+  BehaviorSubject<ListUpdateObject>.seeded(ListUpdateObject(id: -1, type: Null));
 
-  Stream<Map<int, Post>> get getPostStream => allPosts.asBroadcastStream();
+  Stream<Map<int, Post>> get getPostStream => allPostsStream.asBroadcastStream();
+  Stream<ListUpdateObject> get getListUpdateStream => listUpdateStream.asBroadcastStream();
 
   // fetch pre-defined posts with Post model objects
   Future<List<Post>> fetchPosts() async {
@@ -126,18 +139,18 @@ class PostRepository {
       ),
     ];
 
-    Map<int, Post> postSet = allPosts.value;
+    Map<int, Post> postSet = allPostsStream.value;
     postSet.addEntries(dumList.map((e) => MapEntry(e.id, e)));
-    allPosts.add(postSet);
+    allPostsStream.add(postSet);
 
     return dumList;
   }
 
   // like / unlike post
   void likePost(Post post) {
-    Map<int, Post> postSet = allPosts.value;
+    Map<int, Post> postSet = allPostsStream.value;
     postSet[post.id] = post.copyWith(liked: !post.liked);
-    allPosts.add(postSet);
+    allPostsStream.add(postSet);
   }
 
   void updatePostsWithNotes(List<Note> noteList) {
@@ -146,7 +159,7 @@ class PostRepository {
     final Map<int, Note> noteMap = {for (var note in noteList) note.id: note};
 
     /// Get the list of curations from the stream.
-    final outdatedPosts = allPosts.value;
+    final outdatedPosts = allPostsStream.value;
 
     /// Create a new list of curations with the updated content.
     final updatedPosts = outdatedPosts.map((id, post) {
@@ -167,16 +180,17 @@ class PostRepository {
   }
 
   void updatePostStream(List<Post> postList) {
-    Map<int, Post> postSet = allPosts.value;
+    Map<int, Post> postSet = allPostsStream.value;
     for (Post post in postList) {
       postSet[post.id] = post;
     }
-    allPosts.add(postSet);
+    allPostsStream.add(postSet);
   }
 
   void createPost(Post post) {
-    Map<int, Post> postSet = Map.from(allPosts.value);
+    Map<int, Post> postSet = Map.from(allPostsStream.value);
     postSet.addEntries([MapEntry(post.id, post)]);
-    allPosts.add(postSet);
+    allPostsStream.add(postSet);
+    listUpdateStream.add(ListUpdateObject(id: post.id, type: Post));
   }
 }
