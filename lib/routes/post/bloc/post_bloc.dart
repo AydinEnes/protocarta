@@ -22,6 +22,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }) : super(const PostState()) {
     on<LikePostEvent>(_onLikePostEvent);
     on<PostSubscriptionRequestedEvent>(_onPostSubscriptionRequestedEvent);
+    on<CreatePostEvent>(_onCreatePostEvent);
   }
 
   Future<FutureOr<void>> _onPostSubscriptionRequestedEvent(
@@ -41,5 +42,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   FutureOr<void> _onLikePostEvent(
       LikePostEvent event, Emitter<PostState> emit) {
     postRepository.likePost(event.post);
+  }
+
+  FutureOr<void> _onCreatePostEvent(CreatePostEvent event, Emitter<PostState> emit) {
+    postRepository.createPost(event.post);
+    noteRepository.addNoteStream(event.post.note!);
   }
 }

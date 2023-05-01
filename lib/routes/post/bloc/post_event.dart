@@ -19,3 +19,12 @@ class PostSubscriptionRequestedEvent extends PostEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CreatePostEvent extends PostEvent {
+  final Post post;
+
+  const CreatePostEvent(this.post);
+
+  @override
+  List<Object?> get props => [post];
+}

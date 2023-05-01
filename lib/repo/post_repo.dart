@@ -173,4 +173,10 @@ class PostRepository {
     }
     allPosts.add(postSet);
   }
+
+  void createPost(Post post) {
+    Map<int, Post> postSet = Map.from(allPosts.value);
+    postSet.addEntries([MapEntry(post.id, post)]);
+    allPosts.add(postSet);
+  }
 }

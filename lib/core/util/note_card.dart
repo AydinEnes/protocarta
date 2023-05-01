@@ -24,8 +24,8 @@ class NoteCard extends StatelessWidget {
         final displayNote = notes.putIfAbsent(id, () => Note.empty());
         return Card(
           child: GestureDetector(
-            onTap: () =>
-                context.router.push(NoteDetailedRoute(note: displayNote)),
+            onTap: () => context.router.push(NoteDetailedRoute(
+                note: displayNote, noteBloc: context.read<NoteBloc>())),
             child: Container(
               color: Colors.lightBlue,
               child: Row(

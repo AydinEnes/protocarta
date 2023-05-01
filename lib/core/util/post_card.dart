@@ -13,7 +13,8 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
       buildWhen: (previous, current) {
-        debugPrint('build when: $current');
+        debugPrint(
+            'build when: ${current.allPosts.containsKey(id) && (!previous.allPosts.containsKey(id) || previous.allPosts[id] != current.allPosts[id])}');
         return current.allPosts.containsKey(id) &&
             (!previous.allPosts.containsKey(id) ||
                 previous.allPosts[id] != current.allPosts[id]);

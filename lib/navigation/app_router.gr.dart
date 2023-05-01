@@ -36,13 +36,18 @@ class _$AppRouter extends RootStackRouter {
         child: NoteDetailedView(
           key: args.key,
           note: args.note,
+          noteBloc: args.noteBloc,
         ),
       );
     },
     PostCreateRoute.name: (routeData) {
+      final args = routeData.argsAs<PostCreateRouteArgs>();
       return MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const PostCreateView(),
+        child: PostCreateView(
+          key: args.key,
+          postBloc: args.postBloc,
+        ),
       );
     },
     NoteCreateRoute.name: (routeData) {
@@ -133,12 +138,14 @@ class NoteDetailedRoute extends PageRouteInfo<NoteDetailedRouteArgs> {
   NoteDetailedRoute({
     Key? key,
     required Note note,
+    required NoteBloc noteBloc,
   }) : super(
           NoteDetailedRoute.name,
           path: '/note/:id',
           args: NoteDetailedRouteArgs(
             key: key,
             note: note,
+            noteBloc: noteBloc,
           ),
         );
 
@@ -149,28 +156,53 @@ class NoteDetailedRouteArgs {
   const NoteDetailedRouteArgs({
     this.key,
     required this.note,
+    required this.noteBloc,
   });
 
   final Key? key;
 
   final Note note;
 
+  final NoteBloc noteBloc;
+
   @override
   String toString() {
-    return 'NoteDetailedRouteArgs{key: $key, note: $note}';
+    return 'NoteDetailedRouteArgs{key: $key, note: $note, noteBloc: $noteBloc}';
   }
 }
 
 /// generated route for
 /// [PostCreateView]
-class PostCreateRoute extends PageRouteInfo<void> {
-  const PostCreateRoute()
-      : super(
+class PostCreateRoute extends PageRouteInfo<PostCreateRouteArgs> {
+  PostCreateRoute({
+    Key? key,
+    required PostBloc postBloc,
+  }) : super(
           PostCreateRoute.name,
           path: '/post/create',
+          args: PostCreateRouteArgs(
+            key: key,
+            postBloc: postBloc,
+          ),
         );
 
   static const String name = 'PostCreateRoute';
+}
+
+class PostCreateRouteArgs {
+  const PostCreateRouteArgs({
+    this.key,
+    required this.postBloc,
+  });
+
+  final Key? key;
+
+  final PostBloc postBloc;
+
+  @override
+  String toString() {
+    return 'PostCreateRouteArgs{key: $key, postBloc: $postBloc}';
+  }
 }
 
 /// generated route for

@@ -5,10 +5,10 @@ class NoteRepository {
   NoteRepository();
 
   // Note stream
-  late final BehaviorSubject<Map<int,Note>> allNotes =
-      BehaviorSubject<Map<int,Note>>.seeded({});
+  late final BehaviorSubject<Map<int, Note>> allNotes =
+      BehaviorSubject<Map<int, Note>>.seeded({});
 
-  Stream<Map<int,Note>> get getNoteStream => allNotes.asBroadcastStream();
+  Stream<Map<int, Note>> get getNoteStream => allNotes.asBroadcastStream();
 
   // fetch pre-defined notes with Note model objects
   Future<List<Note>> fetchNotes() async {
@@ -76,7 +76,7 @@ class NoteRepository {
       ),
     ];
 
-    Map<int,Note> noteSet = allNotes.value;
+    Map<int, Note> noteSet = allNotes.value;
 
     for (Note note in dumList) {
       noteSet[note.id] = note;
@@ -94,7 +94,7 @@ class NoteRepository {
   }
 
   void updateNoteStream(List<Note> noteList) {
-    Map<int,Note> noteSet = allNotes.value;
+    Map<int, Note> noteSet = allNotes.value;
     for (Note note in noteList) {
       noteSet[note.id] = note;
     }
@@ -102,8 +102,8 @@ class NoteRepository {
   }
 
   Future<Note> addNoteStream(Note note) async {
-    Map<int,Note> noteSet = allNotes.value;
-    noteSet[note.id] = note;
+    Map<int, Note> noteSet = Map.from(allNotes.value);
+    noteSet.addEntries([MapEntry(note.id, note)]);
     allNotes.add(noteSet);
     return note;
   }

@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:protocarta/routes/note/bloc/note_bloc.dart';
 import 'package:protocarta/routes/note/note_create_view.dart';
 import 'package:protocarta/routes/note/note_detailed_view.dart';
+import 'package:protocarta/routes/post/bloc/post_bloc.dart';
 import 'package:protocarta/routes/post/post_create_view.dart';
 import 'package:protocarta/routes/post/post_detailed_view.dart';
 import 'package:protocarta/routes/post/post_list_view.dart';

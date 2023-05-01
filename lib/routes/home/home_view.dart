@@ -38,10 +38,15 @@ class HomeView extends StatelessWidget {
                 context.router.push(const NoteCreateRoute());
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.note_add),
-              onPressed: () {
-                context.router.push(const PostCreateRoute());
+            BlocBuilder<PostBloc, PostState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: const Icon(Icons.note_add),
+                  onPressed: () {
+                    context.router.push(
+                        PostCreateRoute(postBloc: context.read<PostBloc>()));
+                  },
+                );
               },
             )
           ],
