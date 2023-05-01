@@ -17,13 +17,25 @@ class PostCard extends StatelessWidget {
     return BlocBuilder<PostBloc, PostState>(
       buildWhen: (previous, current) {
         debugPrint(
-            'build when: ${current.allPosts.containsKey(id) && (!previous.allPosts.containsKey(id) || previous.allPosts[id] != current.allPosts[id])}');
+            'build when($id): ${current.allPosts.containsKey(id) && (!previous.allPosts.containsKey(id) || previous.allPosts[id] != current.allPosts[id])}');
         return current.allPosts.containsKey(id) &&
             (!previous.allPosts.containsKey(id) ||
                 previous.allPosts[id] != current.allPosts[id]);
       },
       builder: (context, state) {
-        final posts = Map.from(state.allPosts);
+        debugPrint(
+            'building a post: $id ${state.allPosts.keys}\n${state.allPosts.values}');
+        if (!state.allPosts.containsKey(id)) {
+          return Container(
+            height: 20,
+            width: double.infinity,
+            color: Colors.red,
+          );
+        }
+        debugPrint(
+            'building a post: $id ${state.allPosts.keys}\n${state.allPosts.values}');
+        debugPrint('building a post: $id ${state.allPosts.containsKey(id)}');
+        final posts = Map<int, Post>.from(state.allPosts);
         final displayPost = posts.putIfAbsent(id, () => Post.empty());
         return Card(
           child: Column(

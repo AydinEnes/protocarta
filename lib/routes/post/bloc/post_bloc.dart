@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/core/util/logging.dart';
 import 'package:protocarta/models/note.dart';
@@ -30,8 +31,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     await emit.forEach<Map<int, Post>>(postRepository.getPostStream,
         onData: (Map<int, Post> allPosts) {
       final newMap = Map<int, Post>.from(allPosts);
-      noteRepository.updateNoteStream(
-          newMap.values.map((e) => e.note ?? Note.empty()).toList());
+      debugPrint('newMap: $allPosts');
       return state.copyWith(allPosts: newMap);
     }, onError: (e, st) {
       AppLogging.logger.e(e, 'Error in _onPostSubscriptionRequestedEvent', st);

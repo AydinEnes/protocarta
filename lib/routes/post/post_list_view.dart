@@ -5,6 +5,7 @@ import 'package:protocarta/core/util/post_card.dart';
 import 'package:protocarta/models/post.dart';
 import 'package:protocarta/repo/note_repo.dart';
 import 'package:protocarta/repo/post_repo.dart';
+import 'package:rxdart/rxdart.dart';
 
 
 class PostListView extends StatelessWidget {
@@ -23,8 +24,19 @@ class PostListView extends StatelessWidget {
           ..add(const ListSubscriptionRequested()),
         child: BlocBuilder<ListBloc, ListState>(
             builder: (context, state) {
-              // add fetch list event
-              //debugPrint('items: $state');
+              // return ValueListenableBuilder<Map<int, Post>>(
+              //   valueListenable: RepositoryProvider.of<PostRepository>(context).getPostStream.shareValue(),
+              //   builder: (context, allPosts, _) {
+              //     debugPrint('building: ${state.ids}');
+              //     return ListView.builder(
+              //       itemBuilder: (context, index) {
+              //         return PostCard(id: state.ids[index]);
+              //       },
+              //       itemCount: state.ids.length,
+              //     );
+              //   },
+              // );
+              debugPrint('building: ${state.ids}');
               return ListView.builder(
                 itemBuilder: (context, index) {
                   return PostCard(id: state.ids[index]);

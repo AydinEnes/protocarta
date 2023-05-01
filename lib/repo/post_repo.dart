@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:protocarta/models/post.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:protocarta/models/note.dart';
@@ -18,10 +21,13 @@ class PostRepository {
   late final BehaviorSubject<Map<int, Post>> allPostsStream =
       BehaviorSubject<Map<int, Post>>.seeded({});
   late final BehaviorSubject<ListUpdateObject> listUpdateStream =
-  BehaviorSubject<ListUpdateObject>.seeded(ListUpdateObject(id: -1, type: Null));
+      BehaviorSubject<ListUpdateObject>();
 
-  Stream<Map<int, Post>> get getPostStream => allPostsStream.asBroadcastStream();
-  Stream<ListUpdateObject> get getListUpdateStream => listUpdateStream.asBroadcastStream();
+  Stream<Map<int, Post>> get getPostStream =>
+      allPostsStream.asBroadcastStream();
+
+  Stream<ListUpdateObject> get getListUpdateStream =>
+      listUpdateStream.asBroadcastStream();
 
   // fetch pre-defined posts with Post model objects
   Future<List<Post>> fetchPosts() async {
@@ -139,7 +145,7 @@ class PostRepository {
       ),
     ];
 
-    Map<int, Post> postSet = allPostsStream.value;
+    Map<int, Post> postSet = Map.from(allPostsStream.value);
     postSet.addEntries(dumList.map((e) => MapEntry(e.id, e)));
     allPostsStream.add(postSet);
 
@@ -187,10 +193,38 @@ class PostRepository {
     allPostsStream.add(postSet);
   }
 
-  void createPost(Post post) {
+  void createPost(Post post) async {
     Map<int, Post> postSet = Map.from(allPostsStream.value);
     postSet.addEntries([MapEntry(post.id, post)]);
     allPostsStream.add(postSet);
+
+    // Wait for allPostsStream to be updated before updating listUpdateStream
+    final completer = Completer<void>();
+    final subscription = allPostsStream.listen((updatedPostSet) {
+      if (updatedPostSet.containsKey(post.id)) {
+        completer.complete();
+      }
+    });
+
+    await completer.future;
+    subscription.cancel();
+    debugPrint('completer completed');
     listUpdateStream.add(ListUpdateObject(id: post.id, type: Post));
   }
+
+  // Stream<CombinedUpdate> get combinedStream {
+  //   return Rx.combineLatest2<ListUpdateObject, Map<int, Post>, CombinedUpdate>(
+  //     listUpdateStream.stream,
+  //     allPostsStream.stream,
+  //     (listUpdate, allPosts) =>
+  //         CombinedUpdate(listUpdate: listUpdate, allPosts: Map<int, Post>.from(allPosts)),
+  //   );
+  // }
 }
+//
+// class CombinedUpdate {
+//   final ListUpdateObject listUpdate;
+//   final Map<int, Post> allPosts;
+//
+//   CombinedUpdate({required this.listUpdate, required this.allPosts});
+// }

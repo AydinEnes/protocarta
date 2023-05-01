@@ -21,9 +21,9 @@ class PostSubscriptionRequestedEvent extends PostEvent {
 }
 
 class CreatePostEvent extends PostEvent {
-  final Post post;
-
   const CreatePostEvent(this.post);
+
+  final Post post;
 
   @override
   List<Object?> get props => [post];

@@ -25,7 +25,7 @@ class NoteDetailedView extends StatelessWidget {
                     previous.allNotes[note.id] != current.allNotes[note.id]);
           },
           builder: (context, state) {
-            Map<int, Note> notes = Map.from(state.allNotes);
+            Map<int, Note> notes = Map<int, Note>.from(state.allNotes);
             Note displayNote = notes.putIfAbsent(note.id, () => note);
             return Center(
               child: Column(

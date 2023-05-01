@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/repo/post_repo.dart';
 import 'package:protocarta/models/note.dart';
@@ -45,6 +46,11 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     // if Post is the listObjectType then fetch posts
     if (listObjectType == Post) {
       final posts = await postRepository.fetchPosts();
+      final List<Note> notes = posts
+          .where((element) => element.note != null)
+          .map((e) => e.note!)
+          .toList();
+      noteRepository.updateNoteStream(notes);
       emit(state.copyWith(
         status: ActionStatus.success,
         ids: posts.map((e) => e.id).toList(),
@@ -54,15 +60,14 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
   FutureOr<void> _onListSubscriptionRequested(
       ListSubscriptionRequested event, Emitter<ListState> emit) async {
-    // listen to notes and posts streams and emit the state with the new list
+    // if Note is the listObjectType then subscribe to notes
     // if (listObjectType == Note) {
-    //   await emit.forEach<Set<Note>>(noteRepository.getNoteStream,
-    //       onData: (Set<Note> list) {
-    //     final List<int> ids = List<int>.from(state.itemList.map((e) => e.id));
-    //     final List finalList = ids
-    //         .map((e) => list.firstWhere((element) => element.id == e))
-    //         .toList();
-    //     return state.copyWith(itemList: finalList);
+    //   await emit.forEach<ListUpdateObject>(noteRepository.getListUpdateStream,
+    //       onData: (ListUpdateObject listUpdateObject) {
+    //     List<int> ids = List<int>.from(state.ids);
+    //     debugPrint('listUpdateObject: $listUpdateObject');
+    //     debugPrint('ids: $ids');
+    //     return state.copyWith(ids: [listUpdateObject.id, ...ids]);
     //   });
     // }
 
@@ -70,9 +75,20 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       await emit.forEach<ListUpdateObject>(postRepository.getListUpdateStream,
           onData: (ListUpdateObject listUpdateObject) {
         List<int> ids = List<int>.from(state.ids);
-
+        debugPrint('listUpdateObject: $listUpdateObject');
+        debugPrint('ids: $ids');
         return state.copyWith(ids: [listUpdateObject.id, ...ids]);
       });
+      // await emit.forEach<CombinedUpdate>(postRepository.combinedStream,
+      //     onData: (CombinedUpdate combinedUpdate) {
+      //   debugPrint('combinedUpdate: $combinedUpdate');
+      //   List<int> ids = List<int>.from(state.ids);
+      //   if (combinedUpdate.allPosts.containsKey(combinedUpdate.listUpdate.id)) {
+      //     return state.copyWith(ids: [combinedUpdate.listUpdate.id, ...ids]);
+      //   } else {
+      //     return state;
+      //   }
+      // });
     }
   }
 }

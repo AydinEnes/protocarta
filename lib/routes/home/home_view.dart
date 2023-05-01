@@ -16,12 +16,14 @@ class HomeView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          lazy: false,
           create: (context) => NoteBloc(
               noteRepository: RepositoryProvider.of<NoteRepository>(context),
               postRepository: RepositoryProvider.of<PostRepository>(context))
             ..add(const NoteSubscriptionRequestedEvent()),
         ),
         BlocProvider(
+          lazy: false,
           create: (context) => PostBloc(
             postRepository: RepositoryProvider.of<PostRepository>(context),
             noteRepository: RepositoryProvider.of<NoteRepository>(context),

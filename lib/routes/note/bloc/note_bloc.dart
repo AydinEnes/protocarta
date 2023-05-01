@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/repo/note_repo.dart';
 import 'package:protocarta/repo/post_repo.dart';
@@ -34,6 +35,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     await emit.forEach<Map<int, Note>>(
       noteRepository.getNoteStream,
       onData: (Map<int, Note> allNotes) {
+        debugPrint('allNotes: $allNotes');
         final newMap = Map<int, Note>.from(allNotes);
         return state.copyWith(allNotes: newMap);
       },

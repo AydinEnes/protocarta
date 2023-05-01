@@ -20,7 +20,8 @@ class NoteCard extends StatelessWidget {
                 previous.allNotes[id] != current.allNotes[id]);
       },
       builder: (context, state) {
-        final notes = Map.from(state.allNotes);
+        // debugPrint('building a note: $id ${state.allNotes.containsKey(id)}');
+        final notes = Map<int, Note>.from(state.allNotes);
         final displayNote = notes.putIfAbsent(id, () => Note.empty());
         return Card(
           child: GestureDetector(
