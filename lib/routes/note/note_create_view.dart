@@ -10,7 +10,6 @@ class NoteCreateView extends StatelessWidget {
   // use dummy page that says "NoteDetailedView" for now
   const NoteCreateView({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,19 +17,13 @@ class NoteCreateView extends StatelessWidget {
         title: Text('Note'),
       ),
       body: BlocProvider(
-        create: (BuildContext context) =>
-        NoteBloc(
+        create: (BuildContext context) => NoteBloc(
           noteRepository: RepositoryProvider.of<NoteRepository>(context),
           postRepository: RepositoryProvider.of<PostRepository>(context),
         ),
         child: BlocBuilder<NoteBloc, NoteState>(
           builder: (context, state) {
-            Note displayNote = Note(
-              id: state.id,
-              text: state.text,
-              saved: state.saved,
-              postId: state.postId,
-            );
+            Note displayNote = Note.empty();
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -55,5 +48,4 @@ class NoteCreateView extends StatelessWidget {
       ),
     );
   }
-
 }

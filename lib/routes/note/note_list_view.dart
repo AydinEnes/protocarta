@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/core/list_bloc/list_bloc.dart';
 import 'package:protocarta/core/util/note_card.dart';
 import 'package:protocarta/models/note.dart';
-import 'package:protocarta/models/post.dart';
 import 'package:protocarta/repo/note_repo.dart';
 import 'package:protocarta/repo/post_repo.dart';
 
@@ -15,28 +13,26 @@ class NoteListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (BuildContext context)  => ListBloc(
+        create: (context) => ListBloc(
           noteRepository: RepositoryProvider.of<NoteRepository>(context),
           postRepository: RepositoryProvider.of<PostRepository>(context),
           listObjectType: Note,
-        )..add(FetchListEvent())
-        ..add(ListSubscriptionRequested()),
-        child: BlocBuilder<ListBloc, ListState>(
-            builder: (context, state) {
-              // add fetch list event
-              //debugPrint('items: $state');
-              return ListView.builder(
-                itemBuilder: (context, index) {
-                  return NoteCard(note: state.itemList[index] as Note);
-                },
-                itemCount: state.itemList.length,
-              );
-            }
-        ),
+        )
+          ..add(const FetchListEvent())
+          ..add(const ListSubscriptionRequested()),
+        child: BlocBuilder<ListBloc, ListState>(builder: (context, state) {
+          // add fetch list event
+          //debugPrint('items: $state');
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return NoteCard(id: state.ids[index]);
+            },
+            itemCount: state.ids.length,
+          );
+        }),
       ),
     );
   }
-
 }
 
 /*

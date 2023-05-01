@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$Post {
   String get ownerName => throw _privateConstructorUsedError;
   bool get liked => throw _privateConstructorUsedError;
-  Note get note => throw _privateConstructorUsedError;
+  Note? get note => throw _privateConstructorUsedError;
   int get id => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -30,9 +30,9 @@ abstract class $PostCopyWith<$Res> {
   factory $PostCopyWith(Post value, $Res Function(Post) then) =
       _$PostCopyWithImpl<$Res, Post>;
   @useResult
-  $Res call({String ownerName, bool liked, Note note, int id});
+  $Res call({String ownerName, bool liked, Note? note, int id});
 
-  $NoteCopyWith<$Res> get note;
+  $NoteCopyWith<$Res>? get note;
 }
 
 /// @nodoc
@@ -50,7 +50,7 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
   $Res call({
     Object? ownerName = null,
     Object? liked = null,
-    Object? note = null,
+    Object? note = freezed,
     Object? id = null,
   }) {
     return _then(_value.copyWith(
@@ -62,10 +62,10 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
           ? _value.liked
           : liked // ignore: cast_nullable_to_non_nullable
               as bool,
-      note: null == note
+      note: freezed == note
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
-              as Note,
+              as Note?,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -75,8 +75,12 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
 
   @override
   @pragma('vm:prefer-inline')
-  $NoteCopyWith<$Res> get note {
-    return $NoteCopyWith<$Res>(_value.note, (value) {
+  $NoteCopyWith<$Res>? get note {
+    if (_value.note == null) {
+      return null;
+    }
+
+    return $NoteCopyWith<$Res>(_value.note!, (value) {
       return _then(_value.copyWith(note: value) as $Val);
     });
   }
@@ -88,10 +92,10 @@ abstract class _$$_PostCopyWith<$Res> implements $PostCopyWith<$Res> {
       __$$_PostCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String ownerName, bool liked, Note note, int id});
+  $Res call({String ownerName, bool liked, Note? note, int id});
 
   @override
-  $NoteCopyWith<$Res> get note;
+  $NoteCopyWith<$Res>? get note;
 }
 
 /// @nodoc
@@ -105,7 +109,7 @@ class __$$_PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res, _$_Post>
   $Res call({
     Object? ownerName = null,
     Object? liked = null,
-    Object? note = null,
+    Object? note = freezed,
     Object? id = null,
   }) {
     return _then(_$_Post(
@@ -117,10 +121,10 @@ class __$$_PostCopyWithImpl<$Res> extends _$PostCopyWithImpl<$Res, _$_Post>
           ? _value.liked
           : liked // ignore: cast_nullable_to_non_nullable
               as bool,
-      note: null == note
+      note: freezed == note
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
-              as Note,
+              as Note?,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -135,7 +139,7 @@ class _$_Post extends _Post {
   const _$_Post(
       {required this.ownerName,
       required this.liked,
-      required this.note,
+      this.note,
       required this.id})
       : super._();
 
@@ -144,7 +148,7 @@ class _$_Post extends _Post {
   @override
   final bool liked;
   @override
-  final Note note;
+  final Note? note;
   @override
   final int id;
 
@@ -179,7 +183,7 @@ abstract class _Post extends Post {
   const factory _Post(
       {required final String ownerName,
       required final bool liked,
-      required final Note note,
+      final Note? note,
       required final int id}) = _$_Post;
   const _Post._() : super._();
 
@@ -188,7 +192,7 @@ abstract class _Post extends Post {
   @override
   bool get liked;
   @override
-  Note get note;
+  Note? get note;
   @override
   int get id;
   @override

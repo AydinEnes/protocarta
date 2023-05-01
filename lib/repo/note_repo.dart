@@ -1,4 +1,3 @@
-
 import '../models/note.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -6,10 +5,10 @@ class NoteRepository {
   NoteRepository();
 
   // Note stream
-  late final BehaviorSubject<Set<Note>> allNotes =
-  BehaviorSubject<Set<Note>>.seeded({});
+  late final BehaviorSubject<Map<int,Note>> allNotes =
+      BehaviorSubject<Map<int,Note>>.seeded({});
 
-  Stream<Set<Note>> get getNoteStream => allNotes.asBroadcastStream();
+  Stream<Map<int,Note>> get getNoteStream => allNotes.asBroadcastStream();
 
   // fetch pre-defined notes with Note model objects
   Future<List<Note>> fetchNotes() async {
@@ -77,11 +76,10 @@ class NoteRepository {
       ),
     ];
 
-    Set<Note> noteSet = allNotes.value;
+    Map<int,Note> noteSet = allNotes.value;
 
     for (Note note in dumList) {
-      noteSet.removeWhere((element) => element.id == note.id);
-      noteSet.add(note);
+      noteSet[note.id] = note;
     }
 
     allNotes.add(noteSet);
@@ -90,32 +88,23 @@ class NoteRepository {
   }
 
   // make note in the stream saved field true
-  Future<Note> saveNoteStream(int id, String text, int postId, bool saved) async{
-    Note note = Note(
-      saved: !saved,
-      text: text,
-      postId: postId,
-      id: id,
-    );
-
-    updateNoteStream([note]);
+  Future<Note> saveNoteStream(Note note) async {
+    updateNoteStream([note.copyWith(saved: !note.saved)]);
     return note;
   }
 
   void updateNoteStream(List<Note> noteList) {
-    Set<Note> noteSet = allNotes.value;
+    Map<int,Note> noteSet = allNotes.value;
     for (Note note in noteList) {
-      noteSet.removeWhere((element) => element.id == note.id);
-      noteSet.add(note);
+      noteSet[note.id] = note;
     }
     allNotes.add(noteSet);
   }
 
-  Future<Note> addNoteStream(Note note) async{
-    Set<Note> noteSet = allNotes.value;
-    noteSet.add(note);
+  Future<Note> addNoteStream(Note note) async {
+    Map<int,Note> noteSet = allNotes.value;
+    noteSet[note.id] = note;
     allNotes.add(noteSet);
     return note;
   }
-
 }

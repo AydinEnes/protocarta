@@ -22,13 +22,11 @@ class FetchNoteEvent extends NoteEvent {
   List<Object?> get props => [note];
 }
 
-class SubscribeToNoteEvent extends NoteEvent {
-  final int id;
-
-  const SubscribeToNoteEvent(this.id);
+class NoteSubscriptionRequestedEvent extends NoteEvent {
+  const NoteSubscriptionRequestedEvent();
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [];
 }
 
 class AddNoteEvent extends NoteEvent {

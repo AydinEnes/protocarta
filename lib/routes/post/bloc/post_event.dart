@@ -12,3 +12,10 @@ class LikePostEvent extends PostEvent {
   @override
   List<Object?> get props => [post];
 }
+
+class PostSubscriptionRequestedEvent extends PostEvent {
+  const PostSubscriptionRequestedEvent();
+
+  @override
+  List<Object?> get props => [];
+}

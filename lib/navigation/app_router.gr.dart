@@ -20,7 +20,7 @@ class _$AppRouter extends RootStackRouter {
     HomeTabViewRouter.name: (routeData) {
       return MaterialPageX<dynamic>(
         routeData: routeData,
-        child: HomeView(),
+        child: const HomeView(),
       );
     },
     PostDetailedRoute.name: (routeData) {

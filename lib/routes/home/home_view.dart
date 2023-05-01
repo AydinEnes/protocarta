@@ -1,18 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:protocarta/models/post.dart';
 import 'package:protocarta/navigation/app_router.dart';
 import 'package:protocarta/repo/note_repo.dart';
 import 'package:protocarta/repo/post_repo.dart';
-import 'package:protocarta/routes/note/note_list_view.dart';
-import 'package:protocarta/routes/post/post_list_view.dart';
-
-import '../../core/list_bloc/list_bloc.dart';
-import '../note/bloc/note_bloc.dart';
-import '../post/bloc/post_bloc.dart';
+import 'package:protocarta/routes/note/bloc/note_bloc.dart';
+import 'package:protocarta/routes/post/bloc/post_bloc.dart';
 
 class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
   @override
   // there should be an AppBar, BottomNavigationBar, and tabs for posts and notes list views using AutoRoute
   Widget build(BuildContext context) {
@@ -21,14 +18,14 @@ class HomeView extends StatelessWidget {
         BlocProvider(
           create: (context) => NoteBloc(
               noteRepository: RepositoryProvider.of<NoteRepository>(context),
-              postRepository: RepositoryProvider.of<PostRepository>(context)
-          ),
+              postRepository: RepositoryProvider.of<PostRepository>(context))
+            ..add(const NoteSubscriptionRequestedEvent()),
         ),
         BlocProvider(
           create: (context) => PostBloc(
             postRepository: RepositoryProvider.of<PostRepository>(context),
             noteRepository: RepositoryProvider.of<NoteRepository>(context),
-          ),
+          )..add(const PostSubscriptionRequestedEvent()),
         ),
       ],
       child: Scaffold(
@@ -76,5 +73,3 @@ class HomeView extends StatelessWidget {
     );
   }
 } // HomeView
-
-

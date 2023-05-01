@@ -1,24 +1,21 @@
 import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/repo/note_repo.dart';
 import 'package:protocarta/repo/post_repo.dart';
-
-
-import '../../../models/note.dart';
+import 'package:protocarta/models/note.dart';
 
 part 'note_event.dart';
+
 part 'note_state.dart';
 
 class NoteBloc extends Bloc<NoteEvent, NoteState> {
   NoteBloc({
     required this.noteRepository,
     required this.postRepository,
-  }) : super(NoteState()) {
+  }) : super(const NoteState()) {
     on<SaveNoteEvent>(_onSaveNoteEvent);
-    on<SubscribeToNoteEvent>(_onSubscribeToNoteEvent);
+    on<NoteSubscriptionRequestedEvent>(_onNoteSubscriptionRequestedEvent);
     on<FetchNoteEvent>(_onFetchNoteEvent);
     on<AddNoteEvent>(_onAddNoteEvent);
   }
@@ -26,45 +23,29 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   final NoteRepository noteRepository;
   final PostRepository postRepository;
 
-  FutureOr<void> _onSaveNoteEvent(SaveNoteEvent event, Emitter<NoteState> emit) async {
-    Note note = await noteRepository.saveNoteStream(
-      event.note.id,
-      event.note.text,
-      event.note.postId,
-      event.note.saved,
-    );
-    postRepository.updatePostsWithNotes(
-      [note],
-    );
-    emit(state.copyWith(saved: note.saved));
+  FutureOr<void> _onSaveNoteEvent(
+      SaveNoteEvent event, Emitter<NoteState> emit) async {
+    Note _ = await noteRepository.saveNoteStream(event.note);
   }
 
   // subscribe to note
-  FutureOr<void> _onSubscribeToNoteEvent(SubscribeToNoteEvent event, Emitter<NoteState> emit) async {
-    await emit.forEach<Set<Note>>(
+  FutureOr<void> _onNoteSubscriptionRequestedEvent(
+      NoteSubscriptionRequestedEvent event, Emitter<NoteState> emit) async {
+    await emit.forEach<Map<int, Note>>(
       noteRepository.getNoteStream,
-      onData: (Set<Note> list) {
-        Note note = list.firstWhere((element) => element.id == event.id);
-        return state.copyWith(saved: note.saved, text: note.text, postId: note.postId, id: note.id);
+      onData: (Map<int, Note> allNotes) {
+        final newMap = Map<int, Note>.from(allNotes);
+        return state.copyWith(allNotes: newMap);
       },
     );
   }
 
   // fetch note
-  FutureOr<void> _onFetchNoteEvent(FetchNoteEvent event, Emitter<NoteState> emit) async {
-    Note note = event.note;
-    emit(state.copyWith(saved: note.saved, text: note.text, postId: note.postId, id: note.id));
+  FutureOr<void> _onFetchNoteEvent(
+      FetchNoteEvent event, Emitter<NoteState> emit) async {}
+
+  FutureOr<void> _onAddNoteEvent(
+      AddNoteEvent event, Emitter<NoteState> emit) async {
+    Note _ = await noteRepository.addNoteStream(event.note);
   }
-  
-
-  FutureOr<void> _onAddNoteEvent(AddNoteEvent event, Emitter<NoteState> emit) async {
-    Note note = await noteRepository.addNoteStream(
-      event.note
-    );
-  }
-
-
 }
-
-
-

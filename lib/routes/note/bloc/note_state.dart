@@ -1,33 +1,14 @@
 part of 'note_bloc.dart';
 
 class NoteState extends Equatable {
+  final Map<int, Note> allNotes;
 
-  final bool saved;
-  final String text;
-  final int postId;
-  final int id;
+  const NoteState({this.allNotes = const {}});
 
-  const NoteState({
-    this.saved = false,
-    this.text = '',
-    this.postId = 0,
-    this.id = 0,
-  });
-
-  NoteState copyWith({
-    bool? saved,
-    String? text,
-    int? postId,
-    int? id,
-  }) {
-    return NoteState(
-      saved: saved ?? this.saved,
-      text: text ?? this.text,
-      postId: postId ?? this.postId,
-      id: id ?? this.id,
-    );
+  NoteState copyWith({Map<int, Note>? allNotes}) {
+    return NoteState(allNotes: allNotes ?? this.allNotes);
   }
 
   @override
-  List<Object> get props => [saved, text, postId, id];
+  List<Object> get props => [allNotes];
 }

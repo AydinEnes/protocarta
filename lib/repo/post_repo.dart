@@ -1,18 +1,14 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:protocarta/models/post.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:protocarta/models/note.dart';
 
-import '../models/note.dart';
-
-class PostRepository{
+class PostRepository {
   PostRepository();
 
-  late final BehaviorSubject<Set<Post>> allPosts =
-  BehaviorSubject<Set<Post>>.seeded({});
+  late final BehaviorSubject<Map<int, Post>> allPosts =
+      BehaviorSubject<Map<int, Post>>.seeded({});
 
-  Stream<Set<Post>> get getPostStream => allPosts.asBroadcastStream();
+  Stream<Map<int, Post>> get getPostStream => allPosts.asBroadcastStream();
 
   // fetch pre-defined posts with Post model objects
   Future<List<Post>> fetchPosts() async {
@@ -130,62 +126,50 @@ class PostRepository{
       ),
     ];
 
-    Set<Post> postSet = allPosts.value;
-
-    for (Post post in dumList) {
-      postSet.removeWhere((element) => element.id == post.id);
-      postSet.add(post);
-    }
-
+    Map<int, Post> postSet = allPosts.value;
+    postSet.addEntries(dumList.map((e) => MapEntry(e.id, e)));
     allPosts.add(postSet);
 
     return dumList;
   }
 
   // like / unlike post
-  void likePost(int postId, bool liked, String ownerName, Note note) {
-    Set<Post> postSet = allPosts.value;
-    postSet.removeWhere((element) => element.id == postId);
-    postSet.add(Post(
-      id: postId,
-      liked: !liked,
-      ownerName: ownerName,
-      note: note,
-    ));
+  void likePost(Post post) {
+    Map<int, Post> postSet = allPosts.value;
+    postSet[post.id] = post.copyWith(liked: !post.liked);
     allPosts.add(postSet);
   }
-
 
   void updatePostsWithNotes(List<Note> noteList) {
     /// Get the Map<int, Content> from the list of content where the key is
     /// the id of the content.
-    final Map<int, Note> noteMap = {
-      for (var note in noteList) note.id: note
-    };
+    final Map<int, Note> noteMap = {for (var note in noteList) note.id: note};
 
     /// Get the list of curations from the stream.
     final outdatedPosts = allPosts.value;
 
     /// Create a new list of curations with the updated content.
-    final updatedPosts = outdatedPosts.map((post) {
-
+    final updatedPosts = outdatedPosts.map((id, post) {
       /// The curation contains a content that exists in the contentList.
       /// The curation will be updated with the content.
-      if (noteMap.containsKey(post.note.id)) {
-        return post.copyWith(note: noteMap[post.note.id]!);
+
+      if (post.note?.id == null) {
+        return MapEntry(post.id, post);
+      }
+      if (noteMap.containsKey(post.note!.id)) {
+        return MapEntry(post.id, post.copyWith(note: noteMap[post.note!.id]));
       }
 
-      return post;
-    }).toList();
+      return MapEntry(post.id, post);
+    });
     //debugPrint('updatedPosts: $updatedPosts');
-    updatePostStream(updatedPosts);
+    updatePostStream(updatedPosts.values.toList());
   }
 
   void updatePostStream(List<Post> postList) {
-    Set<Post> postSet = allPosts.value;
+    Map<int, Post> postSet = allPosts.value;
     for (Post post in postList) {
-      postSet.removeWhere((element) => element.id == post.id);
-      postSet.add(post);
+      postSet[post.id] = post;
     }
     allPosts.add(postSet);
   }

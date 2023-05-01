@@ -7,7 +7,11 @@ class PostCreateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('PostDetailedView');
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create Post'),
+      ),
+      body: const Center(child: Text('PostCreateView')),
+    );
   }
-
 }
