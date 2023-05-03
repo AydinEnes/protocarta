@@ -24,17 +24,6 @@ class PostListView extends StatelessWidget {
           ..add(const ListSubscriptionRequested()),
         child: BlocBuilder<ListBloc, ListState>(
             builder: (context, state) {
-              // return ValueListenableBuilder<Map<int, Post>>(
-              //   valueListenable: RepositoryProvider.of<PostRepository>(context).getPostStream.shareValue(),
-              //   builder: (context, allPosts, _) {
-              //     debugPrint('building: ${state.ids}');
-              //     return ListView.builder(
-              //       itemBuilder: (context, index) {
-              //         return PostCard(id: state.ids[index]);
-              //       },
-              //       itemCount: state.ids.length,
-              //     );
-              //   },
               // );
               debugPrint('building: ${state.ids}');
               return ListView.builder(

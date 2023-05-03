@@ -72,23 +72,23 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     // }
 
     if (listObjectType == Post) {
-      await emit.forEach<ListUpdateObject>(postRepository.getListUpdateStream,
-          onData: (ListUpdateObject listUpdateObject) {
-        List<int> ids = List<int>.from(state.ids);
-        debugPrint('listUpdateObject: $listUpdateObject');
-        debugPrint('ids: $ids');
-        return state.copyWith(ids: [listUpdateObject.id, ...ids]);
-      });
-      // await emit.forEach<CombinedUpdate>(postRepository.combinedStream,
-      //     onData: (CombinedUpdate combinedUpdate) {
-      //   debugPrint('combinedUpdate: $combinedUpdate');
+      // await emit.forEach<ListUpdateObject>(postRepository.getListUpdateStream,
+      //     onData: (ListUpdateObject listUpdateObject) {
       //   List<int> ids = List<int>.from(state.ids);
-      //   if (combinedUpdate.allPosts.containsKey(combinedUpdate.listUpdate.id)) {
-      //     return state.copyWith(ids: [combinedUpdate.listUpdate.id, ...ids]);
-      //   } else {
-      //     return state;
-      //   }
+      //   debugPrint('listUpdateObject: $listUpdateObject');
+      //   debugPrint('ids: $ids');
+      //   return state.copyWith(ids: [listUpdateObject.id, ...ids]);
       // });
+      await emit.forEach<CombinedUpdate>(postRepository.combinedStream,
+          onData: (CombinedUpdate combinedUpdate) {
+        debugPrint('combinedUpdate: $combinedUpdate');
+        List<int> ids = List<int>.from(state.ids);
+        if (combinedUpdate.allPosts.containsKey(combinedUpdate.listUpdate.id)) {
+          return state.copyWith(ids: [combinedUpdate.listUpdate.id, ...ids]);
+        } else {
+          return state;
+        }
+      });
     }
   }
 }

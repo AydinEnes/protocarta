@@ -24,11 +24,12 @@ class NoteCard extends StatelessWidget {
         final notes = Map<int, Note>.from(state.allNotes);
         final displayNote = notes.putIfAbsent(id, () => Note.empty());
         return Card(
+          color: Colors.white.withOpacity(0.7),
           child: GestureDetector(
             onTap: () => context.router.push(NoteDetailedRoute(
                 note: displayNote, noteBloc: context.read<NoteBloc>())),
             child: Container(
-              color: Colors.lightBlue,
+              padding: const EdgeInsets.only(left: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

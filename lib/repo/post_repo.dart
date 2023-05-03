@@ -198,33 +198,22 @@ class PostRepository {
     postSet.addEntries([MapEntry(post.id, post)]);
     allPostsStream.add(postSet);
 
-    // Wait for allPostsStream to be updated before updating listUpdateStream
-    final completer = Completer<void>();
-    final subscription = allPostsStream.listen((updatedPostSet) {
-      if (updatedPostSet.containsKey(post.id)) {
-        completer.complete();
-      }
-    });
-
-    await completer.future;
-    subscription.cancel();
-    debugPrint('completer completed');
     listUpdateStream.add(ListUpdateObject(id: post.id, type: Post));
   }
 
-  // Stream<CombinedUpdate> get combinedStream {
-  //   return Rx.combineLatest2<ListUpdateObject, Map<int, Post>, CombinedUpdate>(
-  //     listUpdateStream.stream,
-  //     allPostsStream.stream,
-  //     (listUpdate, allPosts) =>
-  //         CombinedUpdate(listUpdate: listUpdate, allPosts: Map<int, Post>.from(allPosts)),
-  //   );
-  // }
+  Stream<CombinedUpdate> get combinedStream {
+    return Rx.combineLatest2<ListUpdateObject, Map<int, Post>, CombinedUpdate>(
+      listUpdateStream.stream,
+      allPostsStream.stream,
+      (listUpdate, allPosts) =>
+          CombinedUpdate(listUpdate: listUpdate, allPosts: Map<int, Post>.from(allPosts)),
+    );
+  }
 }
-//
-// class CombinedUpdate {
-//   final ListUpdateObject listUpdate;
-//   final Map<int, Post> allPosts;
-//
-//   CombinedUpdate({required this.listUpdate, required this.allPosts});
-// }
+
+class CombinedUpdate {
+  final ListUpdateObject listUpdate;
+  final Map<int, Post> allPosts;
+
+  CombinedUpdate({required this.listUpdate, required this.allPosts});
+}
