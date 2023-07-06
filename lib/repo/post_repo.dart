@@ -197,23 +197,6 @@ class PostRepository {
     Map<int, Post> postSet = Map.from(allPostsStream.value);
     postSet.addEntries([MapEntry(post.id, post)]);
     allPostsStream.add(postSet);
-
-    listUpdateStream.add(ListUpdateObject(id: post.id, type: Post));
   }
 
-  Stream<CombinedUpdate> get combinedStream {
-    return Rx.combineLatest2<ListUpdateObject, Map<int, Post>, CombinedUpdate>(
-      listUpdateStream.stream,
-      allPostsStream.stream,
-      (listUpdate, allPosts) =>
-          CombinedUpdate(listUpdate: listUpdate, allPosts: Map<int, Post>.from(allPosts)),
-    );
-  }
-}
-
-class CombinedUpdate {
-  final ListUpdateObject listUpdate;
-  final Map<int, Post> allPosts;
-
-  CombinedUpdate({required this.listUpdate, required this.allPosts});
 }

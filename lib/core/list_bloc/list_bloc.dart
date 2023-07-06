@@ -79,15 +79,10 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       //   debugPrint('ids: $ids');
       //   return state.copyWith(ids: [listUpdateObject.id, ...ids]);
       // });
-      await emit.forEach<CombinedUpdate>(postRepository.combinedStream,
-          onData: (CombinedUpdate combinedUpdate) {
-        debugPrint('combinedUpdate: $combinedUpdate');
-        List<int> ids = List<int>.from(state.ids);
-        if (combinedUpdate.allPosts.containsKey(combinedUpdate.listUpdate.id)) {
-          return state.copyWith(ids: [combinedUpdate.listUpdate.id, ...ids]);
-        } else {
-          return state;
-        }
+      await emit.forEach<Map<int, Post>>(postRepository.allPostsStream,
+          onData: (Map<int, Post> allPosts) {
+        debugPrint('combinedUpdate: $allPosts');
+        return state.copyWith(ids: allPosts.keys.toList());
       });
     }
   }
