@@ -26,6 +26,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   FutureOr<void> _onSaveNoteEvent(
       SaveNoteEvent event, Emitter<NoteState> emit) async {
     Note _ = await noteRepository.saveNoteStream(event.note);
+
   }
 
   // subscribe to note

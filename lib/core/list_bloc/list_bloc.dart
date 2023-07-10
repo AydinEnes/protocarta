@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:protocarta/repo/post_repo.dart';
 import 'package:protocarta/models/note.dart';
@@ -29,6 +30,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   FutureOr<void> _onFetchListEvent(
       FetchListEvent event, Emitter<ListState> emit) async {
     // if Note is the listObjectType then fetch notes
+    debugPrint('FETCCCHHH');
     if (listObjectType == Note) {
       final notes = await noteRepository.fetchNotes();
       //debugPrint('notes: $notes');

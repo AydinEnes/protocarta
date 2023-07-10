@@ -20,6 +20,10 @@ class PostCard extends StatelessWidget {
                 previous.allPosts[id] != current.allPosts[id]);
       },
       builder: (context, state) {
+        debugPrint('XXXXXXXX');
+        context.read<PostBloc>().noteRepository.allNotes.value.forEach((key, value) {
+          debugPrint('key: $key, value: $value');
+        });
         final posts = Map.from(state.allPosts);
         final displayPost = posts.putIfAbsent(id, () => Post.empty());
         return Card(
